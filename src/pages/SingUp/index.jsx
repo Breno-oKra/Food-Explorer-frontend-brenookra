@@ -1,7 +1,16 @@
 import { Button } from "../../components/Button";
 import { Container, Form } from "./style";
 import Logo from "../../assets/logo.svg";
-export function SingOut() {
+import { useAuth } from "../../hooks/auth";
+import { Link } from "react-router-dom";
+export function SingUp() {
+  const email = "breno@gmail.com";
+  const password = "123";
+  const { login } = useAuth();
+  function handleSignIn() {
+    login({ email, password });
+  }
+  
   return (
     <Container>
       <div>
@@ -9,8 +18,15 @@ export function SingOut() {
       </div>
       <div>
         <Form>
-          <h3>Faça Login</h3>
-         
+          <h3>Crie sua conta</h3>
+          <label htmlFor="name">
+            Seu Nome
+            <input
+              id="name"
+              type="text"
+              placeholder="Exemplo: Maria da Silva"
+            />
+          </label>
           <label htmlFor="email">
             Email
             <input
@@ -27,8 +43,8 @@ export function SingOut() {
               placeholder="No mínimo 6 caracteres"
             />
           </label>
-          <Button title="Criar conta" />
-          <a href="#">Já tenho uma conta</a>
+          <Button title="Criar conta" onClick={handleSignIn} type="button" />
+          <Link to="/">Já tenho uma conta</Link>
         </Form>
       </div>
     </Container>

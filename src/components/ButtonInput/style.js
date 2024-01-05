@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   input {
     padding:0;
+    padding-left: 3px;
     min-width: 40px;
   }
   &.add {

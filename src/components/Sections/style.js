@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -56,7 +57,7 @@ export const Container = styled.div`
     }
   }
 `;
-export const Box = styled.div`
+export const Box = styled(Link)`
   position: relative;
   z-index: 1;
   padding: 24px;
@@ -79,8 +80,9 @@ export const Box = styled.div`
     }
   }
   > img {
-    width: 176px;
+    width: 100%;
     height: 176px;
+    object-fit: cover; 
   }
   > h2 {
     font-family: Poppins;

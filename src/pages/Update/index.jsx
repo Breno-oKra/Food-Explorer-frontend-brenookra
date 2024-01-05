@@ -7,12 +7,12 @@ import { Button } from "../../components/Button";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/auth";
 import { api } from "../../hooks/api";
-import { useNavigate} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export function Add() {
+export function Update() {
   const navigate = useNavigate()
   const { user, signOut} = useAuth();
-
+  const params = useParams()
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -36,13 +36,12 @@ export function Add() {
   function RemoveIngredients(ingDelete) {
     setIngredients((prevState) => prevState.filter((ing) => ing !== ingDelete));
   }
-
-
+ 
   async function handleUpdate() {
      
     await api
       .post(
-        "/foods",
+        `/foods/${params.id}`,
         {
           name,
           description,
@@ -54,18 +53,19 @@ export function Add() {
         { withCredentials: true }
       )
       .then(async (res) => { 
-        const data = res.data.Food
+        const data = res.data.FoodUpdated
         try {
-          if (image) {  
-           
+          
+          if (typeof image == "object") {   
+            console.log(typeof image)
             const fileUploadForm = new FormData();
             fileUploadForm.append("avatar", image);
-           
+            
             const response = await api.patch(
               `/foods/image/${data.id}`,
               fileUploadForm,{withCredentials:true}
             );
-           
+            console.log(response)
             setImage(response.data.avatar);
           
           }
@@ -82,7 +82,29 @@ export function Add() {
     alert("Comida Criada com sucesso");
     navigate(-1)
   }
- 
+  useEffect(() => {
+    async function FetchFood(){
+      const res = await api.get(`/foods/${params.id}`,{withCredentials:true})
+      const result  = res.data
+      if(result){
+        let ing = []
+        setName(result.name)
+        setCategory(result.category)
+        setDescription(result.description)
+        setImage(result.image)
+        setPrice(result.value)
+        result.ingredients.map((item) => {
+          ing.push(item.name)
+        })
+        setIngredients(ing)
+      }
+      
+    }
+    if(params.id){
+      FetchFood()
+    }
+  },[])
+
   return (
     <Container>
       <Header />

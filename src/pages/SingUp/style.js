@@ -38,7 +38,6 @@ export const Form = styled.form`
       border-radius: 8px;
       background:${({ theme }) => theme.DARK_900};
       color: ${({ theme }) => theme.LIGHT_300};
-      border: 1px solid ${({ theme }) => theme.LIGHT_100};
     }
   }
   a{
