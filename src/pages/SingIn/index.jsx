@@ -9,15 +9,16 @@ export function SingIn() {
   const [password,setPassword] =  useState("")
   const { login } = useAuth();
   const[status,setStatus] = useState(true)
-  function handleSignIn() {
+  async function handleSignIn () {
     setStatus(false)
-    try{
-      login({ email, password })
-    }catch(error){
-      alert(error)
+    try {
+      await login({ email, password })
+    } catch (error) {
+      alert(error.response)
       setStatus(true)
+   
     }
-  
+   
   }
 
   return (
