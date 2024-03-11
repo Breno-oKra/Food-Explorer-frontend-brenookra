@@ -5,7 +5,19 @@
  
 </div>
 
-- code backend: https://github.com/Breno-oKra/API-NODE-rocketseat-explorer-desafio
+- code backend: https://github.com/Breno-oKra/Food_explorerv2
+https://github.com/Breno-oKra/Food-Explorer-frontend-brenookra
+
+## UTILS
+user_adm: mabel@gmail.com
+senha: 123
+
+user_adm2: fabi@gmail.com
+senha: 123
+
+user_customer: breno@gamil.com
+senha: 123
+
 
 ## 🚀 Techniques
 

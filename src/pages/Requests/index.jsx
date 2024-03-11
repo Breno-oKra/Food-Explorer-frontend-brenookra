@@ -31,6 +31,7 @@ export function Requests() {
   const [validate, setValidate] = useState();
   const [cvc, setCVC] = useState();
   const [status, setStatus] = useState("none");
+  const[controlButton,setControlButton] = useState(true)
   const navigate = useNavigate();
   useEffect(() => {
     async function dataLoad() {
@@ -86,13 +87,14 @@ export function Requests() {
     setTotalSum(Sume.toFixed(2));
   }
   function handlePay() {
-    handleOrder();
-    /* if(card && validate && cvc){
+    setControlButton(false)
+    if(card && validate && cvc){
         handleOrder()
+        setControlButton(true)
     }
     else{
         alert("preencha todos os campos")
-    } */
+    }
   }
   async function handleOrder() {
     await api.post(
@@ -221,11 +223,18 @@ export function Requests() {
                             ></InputMask>
                           </fieldset>
                         </div>
-                        <Button
+                        {
+                          controlButton?   <Button
                           title={"Finalizar pagamento"}
                           icon={Receipt}
                           onClick={handlePay}
-                        />
+                        /> :  <Button
+                        title={"Finalizar pagamento"}
+                        icon={Receipt}
+                   
+                      />
+                        }
+                      
                       </form>
                     )
                   ) : (
