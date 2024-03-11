@@ -1,0 +1,33 @@
+category
+: 
+"Refeição"
+created_at
+: 
+"2024-03-05 17:35:31"
+description
+: 
+"melhor batata da região"
+id
+: 
+4
+idCart
+: 
+26
+image
+: 
+"96e5eb699b26dc50826d-macarrao-com-sardinha-.jpg"
+name
+: 
+"batatinha boa"
+quant
+: 
+2
+updated_at
+: 
+"2024-03-05 17:35:31"
+user_id
+: 
+1
+value
+: 
+"14,99"

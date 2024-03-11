@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
+  
   input {
     padding:0;
     padding-left: 3px;
@@ -37,4 +38,5 @@ export const Container = styled.div`
       color: ${({ theme }) => theme.LIGHT_300};
     }
   }
+ 
 `;

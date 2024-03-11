@@ -18,4 +18,14 @@ export const Container = styled.div`
     font-style: normal;
     font-weight: 400;
   }
+  @media (max-width: 800px) {
+    padding: 24px 10px;
+    justify-content: space-between;
+    img{
+      width: 140px;
+    }
+    span{
+      font-size: 12px;
+    }
+  }
 `;

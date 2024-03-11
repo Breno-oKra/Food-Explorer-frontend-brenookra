@@ -2,7 +2,7 @@ import { Button } from "../../components/Button";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { Container, BoxInfos, Infos, Box } from "./style";
-import foodPra from "../../assets/food.svg";
+
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CaretLeft } from "@phosphor-icons/react";
@@ -15,12 +15,24 @@ export function Details() {
   const params = useParams();
   const navigate = useNavigate()
   const [newData, setNewData] = useState(null);
-  const {user} = useAuth()
+  const {user,signOut} = useAuth()
   useEffect(() => {
     async function fetchNote() {
-      const response = await api.get(`/foods/${params.id}`, { withCredentials: true });
+      try {
+        const response = await api.get(`/foods/${params.id}`, { withCredentials: true });
 
-      setNewData(response.data);
+        setNewData(response.data);
+      } catch (error) {
+      
+        if(error.response.status == 401){
+          alert("Você foi Deslogado")
+          signOut()
+          
+        }
+        return
+        
+      }
+     
     }
     fetchNote();
   }, []);
@@ -29,8 +41,8 @@ export function Details() {
     <Container>
       <Header />
       <Box>
-        <button onClick={() => navigate("/")}>
-          <CaretLeft /> Voltar
+        <button onClick={() => navigate(-1)}>
+          <CaretLeft /> voltar
         </button>
         {newData ? (
           <BoxInfos>
@@ -50,9 +62,9 @@ export function Details() {
                 </div>
               </Infos>
               <div>
-                {user.role == "customer"?  <BoxQuant /> : <></> }
+                {user.role == "customer"?  <BoxQuant valueText={newData.value} food={newData} isDetail /> : <></> }
+                {user.role == "admin"?   <Button title="Editar Prato" to={`/change/${newData.id}`} type="button" /> : <></> }
                
-                <Button title="Editar Prato" to={`/change/${newData.id}`} type="button" />
               </div>
             </div>
           </BoxInfos>

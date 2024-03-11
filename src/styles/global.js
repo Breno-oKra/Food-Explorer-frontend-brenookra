@@ -33,5 +33,6 @@ export default createGlobalStyle`
     button:hover, a:hover{
         transition: brightness(0.9);
     }
+   
   
 `

@@ -13,6 +13,16 @@ export const Container = styled.div`
     justify-content: center;
     align-items: center;
   }
+  @media (max-width: 1000px) {
+    flex-direction: column;
+    justify-content: center;
+    .titleForm{
+      display: none;
+    }
+    > div > form{
+      background: none;
+    }
+  }
 `;
 export const Form = styled.form`
   display: flex;

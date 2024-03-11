@@ -10,36 +10,58 @@ import { api } from "../../hooks/api";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function Update() {
-  const navigate = useNavigate()
-  const { user, signOut} = useAuth();
-  const params = useParams()
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const params = useParams();
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Refeição");
   const [ingredients, setIngredients] = useState([]);
   const [newIngredients, setNewIngredients] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
 
   function handleChangeImage(event) {
-    
     const file = event.target.files[0];
     setImage(file);
     /* const imagePreview = URL.createObjectURL(file); */
-  
   }
   function AddIngredients() {
     setIngredients((prevState) => [...prevState, newIngredients]);
     setNewIngredients("");
-    console.log(ingredients)
+   
   }
   function RemoveIngredients(ingDelete) {
     setIngredients((prevState) => prevState.filter((ing) => ing !== ingDelete));
   }
- 
+  String.prototype.reverse = function(){
+    return this.split('').reverse().join(''); 
+  };
+  function mascaraMoeda(evento) {
+
+    let priceString = evento.target.value.replace(/[^\d]+/gi, "").reverse()
+    var resultado = "";
+    var mascara = "##.###.###,##".reverse();
+
+    for (var x = 0, y = 0; x < mascara.length && y < priceString.length;) {
+      
+      if (mascara.charAt(x) != "#") {
+        resultado += mascara.charAt(x);
+        x++;
+        
+      } else {
+        resultado += priceString.charAt(y);
+        
+        y++;
+        x++;
+      }
+    }
+    
+    setPrice(resultado.reverse())
+  }
   async function handleUpdate() {
-     
-    await api
+    try {
+      await api
       .post(
         `/foods/${params.id}`,
         {
@@ -52,67 +74,94 @@ export function Update() {
         },
         { withCredentials: true }
       )
-      .then(async (res) => { 
-        const data = res.data.FoodUpdated
-        try {
-          
-          if (typeof image == "object") {   
-            console.log(typeof image)
+      .then(async (res) => {   
+        try {    
+          const data = res.data.FoodUpdated;
+         
+          if (typeof image == "object") {
+           
             const fileUploadForm = new FormData();
             fileUploadForm.append("avatar", image);
             
             const response = await api.patch(
               `/foods/image/${data.id}`,
-              fileUploadForm,{withCredentials:true}
+              fileUploadForm,
+              { withCredentials: true }
             );
-            console.log(response)
-            setImage(response.data.avatar);
           
+            setImage(response.data.avatar);
           }
+          alert("Comida Atualizada com sucesso");
+          navigate(-1);
         } catch (error) {
-          if (error.response) {
-            alert(error.response.data.message);
-          } else {
-            alert("Não foi possivel atualizar o perfil");
+          if (error.response.status == 401) {
+            alert("Não Autorizado");
           }
-        } 
-       
+        }
       });
-      
-    alert("Comida Criada com sucesso");
-    navigate(-1)
-  }
-  useEffect(() => {
-    async function FetchFood(){
-      const res = await api.get(`/foods/${params.id}`,{withCredentials:true})
-      const result  = res.data
-      if(result){
-        let ing = []
-        setName(result.name)
-        setCategory(result.category)
-        setDescription(result.description)
-        setImage(result.image)
-        setPrice(result.value)
-        result.ingredients.map((item) => {
-          ing.push(item.name)
-        })
-        setIngredients(ing)
+    } catch (error) {
+      if(error.response.status == 401){
+        alert("Usuario Deslogado, Por favor faça login novamente")
+        signOut()
+        navigate("/")
+        return
       }
       
+      alert("Não foi Possivel Atualizar essa comida")
+      
     }
-    if(params.id){
-      FetchFood()
+   
+  }
+  async function handleDelete() {
+    const confirm = window.confirm("Deseja remover esta Comida?");
+    if (confirm) {
+      await api.delete(`/foods/${params.id}`, { withCredentials: true });
+      navigate("/");
     }
-  },[])
+  }
+  useEffect(() => {
+    async function FetchFood() {
+      try {
+        const res = await api.get(`/foods/${params.id}`, {
+          withCredentials: true,
+        });
+        const result = res.data;
+        if (result) {
+          let ing = [];
+          setName(result.name);
+          setCategory(result.category);
+          setDescription(result.description);
+          setImage(result.image);
+          setPrice(result.value);
+          result.ingredients.map((item) => {
+            ing.push(item.name);
+          });
+          setIngredients(ing);
+        }
+      } catch (error) {
+        if(error.response.status == 401){
+        navigate("/")
+          alert("Você foi Deslogado")
+          signOut()
+         
+        }
+   
+        
+      }
+    }
+    if (params.id) {
+      FetchFood();
+    }
+  }, []);
 
   return (
     <Container>
       <Header />
       <Box>
-        <button  onClick={() => navigate(-1)}>
+        <button onClick={() => navigate(-1)}>
           <CaretLeft /> voltar
         </button>
-        <h2>Adicionar prato</h2>
+        <h2>Editar prato</h2>
         <Form>
           <div className="align-1">
             <fieldset>
@@ -145,12 +194,15 @@ export function Update() {
               <select
                 name="category"
                 id="1"
-                defaultValue="Refeição"
-                
+                value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
                 <option value="Refeição">Refeição</option>
+                <option value="Sobremesas">Sobremesas</option>
+                <option value="Bebidas">Bebidas</option>
+                <option value="Lanches">Lanches</option>
                 <option value="Janta">Janta</option>
+                
               </select>
             </fieldset>
           </div>
@@ -159,7 +211,6 @@ export function Update() {
               <legend>Ingredients</legend>
               <div>
                 {ingredients.map((name, index) => (
-                  
                   <ButtonInput
                     key={String(index)}
                     title={name}
@@ -178,9 +229,10 @@ export function Update() {
             <fieldset>
               <legend>Preço</legend>
               <input
-                type="text"
+                id="inputMoney"
+                type="Text"
+                onChange={(e) => mascaraMoeda(e)}
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
               />
             </fieldset>
           </div>
@@ -193,7 +245,11 @@ export function Update() {
             />
           </fieldset>
           <ContainerButton>
-            <Button title="Excluir prato" color="#0D161B" />
+            <Button
+              title="Excluir prato"
+              color="#0D161B"
+              onClick={handleDelete}
+            />
             <Button
               title="Salvar alterações"
               color="#AB4D55"

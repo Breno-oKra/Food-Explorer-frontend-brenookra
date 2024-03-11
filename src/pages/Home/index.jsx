@@ -6,26 +6,70 @@ import { Footer } from "../../components/Footer";
 import { useEffect, useState } from "react";
 import { api } from "../../hooks/api";
 import { useAuth } from "../../hooks/auth";
+import { useLocation } from "react-router-dom";
 
 export function Home() {
-  const { user } = useAuth();
+
+  const {  signOut } = useAuth();
   const [foods, setFoods] = useState([]);
+  const [controlData, setControlData] = useState(false);
+  const DataCategory = [
+    "Refeição",
+    "Sobremesas",
+    "Bebidas",
+    "Lanches",
+    "Janta",
+  ];
+  const Query = useLocation().search;
+
   useEffect(() => {
-    async function dataLoad(){
-      await api.get(`/foods/`,{withCredentials:true}).then((res) => {
-        setFoods(res.data)
-      })
+    if (Query) {
+     
+      dataLoadSearch();
+    }else{
+      dataLoad();
     }
-    dataLoad()
-  },[])
-  function Filtered(catego){
-    const y = foods.filter((food) => food.category == catego)
-    console.log(y)
-    return y
+    async function dataLoad() {
+      try {
+        await api.get(`/foods/`, { withCredentials: true }).then((res) => {
+          setFoods(res.data);
+        });
+      } catch (error) {
+        if (error.response.status == 401) {
+          alert("Você Foi Deslogado");
+          signOut();
+        }
+      }
+    }
+    async function dataLoadSearch() {
+      
+      try {
+        await api
+          .get(`/foods/${Query}`, { withCredentials: true })
+          .then((res) => {
+    
+            setFoods(res.data);
+         
+          });
+      } catch (error) {
+        if (error.response.status == 401) {
+          alert("Você Foi Deslogado");
+          signOut();
+        }
+      }
+    }
+    
+  }, [controlData]);
+  function Filtered(catego) {
+    const y = foods.filter((food) => food.category == catego);
+    if (y.length < 1) {
+      return;
+    }
+    return y;
   }
   return (
     <Container>
-      <Header />
+      <Header controlData={controlData} setControlData={setControlData} />
       <Box>
         <BoxBanner>
           <img src={Banner} width={500} alt="" />
@@ -35,15 +79,21 @@ export function Home() {
           </div>
         </BoxBanner>
         <div>
-          {foods.length > 0 && (
-            <>
-              {
-                Filtered("Janta") && (
-                  <Section title={"Janta"} data={Filtered("Janta")}/>
+          {foods.length > 0 ? (
+            DataCategory.map(
+              (item, index) =>
+                Filtered(item) && (
+                  <Section
+                    key={index}
+                    title={item}
+                    data={Filtered(item)}
+                    AttData={setControlData}
+                    AttDataValue={controlData}
+                  />
                 )
-              }
-              
-            </>
+            )
+          ) : (
+            <div></div>
           )}
         </div>
       </Box>

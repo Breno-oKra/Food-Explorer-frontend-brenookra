@@ -6,6 +6,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  
 `;
 export const Box = styled.main`
   width: 100%;
@@ -30,6 +31,9 @@ export const Box = styled.main`
   h2{
     margin-bottom: 32px;
   }
+  @media (max-width:800px) {
+    padding-inline:30px;
+    }
 `;
 export const Form = styled.form`
   width: 100%;
@@ -72,7 +76,9 @@ export const Form = styled.form`
     }
     fieldset:nth-child(1) {
       width: 229px;
+ 
       > label {
+       
         input {
           width: 1;
           position: absolute;
@@ -80,9 +86,10 @@ export const Form = styled.form`
           display: none;
         }
         div {
+         
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: start;
           gap: 8px;
           padding: 12px 14px;
           border-radius: 8px;
@@ -101,6 +108,13 @@ export const Form = styled.form`
     }
     fieldset:nth-child(3) {
       width: 264px;
+    }
+    @media (max-width:800px) {
+      flex-direction: column;
+      fieldset{
+        min-width:100%;
+       
+      }
     }
   }
   .align-2 {
@@ -125,9 +139,13 @@ export const Form = styled.form`
         padding: 12px 14px;
       }
     }
+    @media (max-width:800px) {
+      flex-direction: column;
+    }
   }
 `;
 export const ContainerButton = styled.div`
     display: flex;
+    width: 100%;
     gap: 32px;
 `

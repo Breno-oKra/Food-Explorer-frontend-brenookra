@@ -29,6 +29,21 @@ export const Box = styled.main`
     }
  
   }
+  @media (max-width:800px) {
+    padding-inline: 30px;
+    align-items: center;
+    > button{
+      width: 100%;
+      font-weight: normal;
+
+      justify-content: start;
+      margin-bottom: 10px;
+      > svg{
+        font-size: 26px;
+      }
+    }
+ 
+  }
 `;
 export const BoxInfos = styled.div`
   display: flex;
@@ -45,7 +60,25 @@ export const BoxInfos = styled.div`
         display: flex;
         gap:33px ;
         margin-top: 48px;
+      
     }
+  }
+  @media (max-width:800px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    img{
+      width: 260px;
+    }
+    >div:nth-child(2){
+        display: flex;
+        gap:10px ;
+        margin-top: 48px;
+    
+        align-items: center;
+     
+    }
+
   }
 `;
 export const Infos = styled.div`
@@ -68,7 +101,7 @@ export const Infos = styled.div`
   > div {
     display: flex;
     gap: 12px;
-
+    flex-wrap: wrap;
     > span {
       color: ${({ theme }) => theme.LIGHT_100};
       background: ${({ theme }) => theme.DARK_1000};
@@ -77,6 +110,17 @@ export const Infos = styled.div`
       font-size: 14px;
       font-weight: 500;
       border-radius: 5px;
+    }
+  }
+  @media (max-width:800px) {
+    width: 100%;
+
+    align-items: center;
+    h3{
+      font-size: 27px;
+    }
+    p{
+      font-size: 16px;
     }
   }
 `;

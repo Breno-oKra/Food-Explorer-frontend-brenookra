@@ -8,8 +8,16 @@ export function SingIn() {
   const [email,setEmail] = useState("")
   const [password,setPassword] =  useState("")
   const { login } = useAuth();
+  const[status,setStatus] = useState(true)
   function handleSignIn() {
-    login({ email, password });
+    setStatus(false)
+    try{
+      login({ email, password })
+    }catch(error){
+      alert(error)
+      setStatus(true)
+    }
+  
   }
 
   return (
@@ -19,7 +27,7 @@ export function SingIn() {
       </div>
       <div>
         <Form>
-          <h3>Faça Login</h3>
+          <h3 className="titleForm">Faça Login</h3>
 
           <label htmlFor="email">
             Email
@@ -41,7 +49,10 @@ export function SingIn() {
               onChange={e => setPassword(e.target.value)}
             />
           </label>
-          <Button title="Faça login" onClick={handleSignIn} type="button" />
+          {
+            status?  <Button title="Faça login" onClick={handleSignIn} type="button" /> :  <Button title="Carregando..." />
+          }
+         
          
           <Link to="/register">Criar uma conta</Link>
         </Form>

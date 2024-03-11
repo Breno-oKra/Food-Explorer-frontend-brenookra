@@ -4,42 +4,38 @@ import { Header } from "../../components/Header";
 import { Container, Box, Form, ContainerButton } from "./style";
 import { ButtonInput } from "../../components/ButtonInput";
 import { Button } from "../../components/Button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../hooks/auth";
 import { api } from "../../hooks/api";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function Add() {
-  const navigate = useNavigate()
-  const { user, signOut} = useAuth();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("Refeição");
   const [ingredients, setIngredients] = useState([]);
   const [newIngredients, setNewIngredients] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
 
   function handleChangeImage(event) {
-    
     const file = event.target.files[0];
     setImage(file);
     /* const imagePreview = URL.createObjectURL(file); */
-  
   }
   function AddIngredients() {
     setIngredients((prevState) => [...prevState, newIngredients]);
     setNewIngredients("");
-    console.log(ingredients)
+  
   }
   function RemoveIngredients(ingDelete) {
     setIngredients((prevState) => prevState.filter((ing) => ing !== ingDelete));
   }
 
-
   async function handleUpdate() {
-     
     await api
       .post(
         "/foods",
@@ -53,41 +49,68 @@ export function Add() {
         },
         { withCredentials: true }
       )
-      .then(async (res) => { 
-        const data = res.data.Food
+      .then(async (res) => {
+        const data = res.data.Food;
         try {
-          if (image) {  
-           
+          if (image) {
             const fileUploadForm = new FormData();
             fileUploadForm.append("avatar", image);
-           
+
             const response = await api.patch(
               `/foods/image/${data.id}`,
-              fileUploadForm,{withCredentials:true}
+              fileUploadForm,
+              { withCredentials: true }
             );
-           
+
             setImage(response.data.avatar);
-          
           }
         } catch (error) {
-          if (error.response) {
-            alert(error.response.data.message);
+          if (error.response.status == 401) {
+         
+            alert("Você foi Deslogado");
+            signOut();
           } else {
-            alert("Não foi possivel atualizar o perfil");
+            alert(
+              `Não Foi Possivel Adicionar esta Comida Erro ${error.response.status}`
+            );
           }
-        } 
-       
+        }
       });
-      
+
     alert("Comida Criada com sucesso");
-    navigate(-1)
+    navigate(-1);
   }
- 
+  String.prototype.reverse = function(){
+    return this.split('').reverse().join(''); 
+  };
+  function mascaraMoeda(evento) {
+
+    let priceString = evento.target.value.replace(/[^\d]+/gi, "").reverse()
+    var resultado = "";
+    var mascara = "##.###.###,##".reverse();
+
+    for (var x = 0, y = 0; x < mascara.length && y < priceString.length;) {
+      
+      if (mascara.charAt(x) != "#") {
+        resultado += mascara.charAt(x);
+        x++;
+        
+      } else {
+        resultado += priceString.charAt(y);
+        
+        y++;
+        x++;
+      }
+    }
+    
+    setPrice(resultado.reverse())
+  }
+
   return (
     <Container>
       <Header />
       <Box>
-        <button  onClick={() => navigate(-1)}>
+        <button onClick={() => navigate(-1)}>
           <CaretLeft /> voltar
         </button>
         <h2>Adicionar prato</h2>
@@ -123,12 +146,14 @@ export function Add() {
               <select
                 name="category"
                 id="1"
-                defaultValue="Refeição"
-                
+                value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
                 <option value="Refeição">Refeição</option>
-                <option value="Janta">Janta</option>
+                <option value="Sobremesas">Sobremesas</option>
+                <option value="Bebidas">Bebidas</option>
+                <option value="Lanches">Lanches</option>
+                <option value="Janta">Janta</option>ss
               </select>
             </fieldset>
           </div>
@@ -137,7 +162,6 @@ export function Add() {
               <legend>Ingredients</legend>
               <div>
                 {ingredients.map((name, index) => (
-                  
                   <ButtonInput
                     key={String(index)}
                     title={name}
@@ -153,12 +177,13 @@ export function Add() {
                 />
               </div>
             </fieldset>
-            <fieldset>
+            <fieldset id="doido">
               <legend>Preço</legend>
               <input
-                type="text"
+                id="inputMoney"
+                type="Text"
+                onChange={(e) => mascaraMoeda(e)}
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
               />
             </fieldset>
           </div>
@@ -171,7 +196,6 @@ export function Add() {
             />
           </fieldset>
           <ContainerButton>
-            <Button title="Excluir prato" color="#0D161B" />
             <Button
               title="Salvar alterações"
               color="#AB4D55"
