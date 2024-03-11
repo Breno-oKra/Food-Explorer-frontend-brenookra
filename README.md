@@ -15,7 +15,7 @@ senha: 123
 user_adm2: fabi@gmail.com
 senha: 123
 
-user_customer: breno@gamil.com
+user_customer: breno@gmail.com
 senha: 123
 
 
