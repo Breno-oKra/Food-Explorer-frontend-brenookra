@@ -6,7 +6,7 @@
 </div>
 
 - code backend: https://github.com/Breno-oKra/Food_explorerv2
-https://github.com/Breno-oKra/Food-Explorer-frontend-brenookra
+- site deployed : https://food-explorer-brenookra.netlify.app/
 
 ## UTILS
 user_adm: mabel@gmail.com
