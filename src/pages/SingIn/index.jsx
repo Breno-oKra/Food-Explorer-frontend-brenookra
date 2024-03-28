@@ -14,7 +14,7 @@ export function SingIn() {
     try {
       await login({ email, password })
     } catch (error) {
-      alert(error.response)
+      alert(error.message)
       setStatus(true)
    
     }

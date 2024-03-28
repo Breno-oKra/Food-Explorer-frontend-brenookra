@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route,Navigate} from 'react-router-dom';
 
 import { Home } from '../pages/Home';
 import { Details } from '../pages/Details';
@@ -12,14 +12,20 @@ import { useAuth } from '../hooks/auth';
 export function AdminRoutes() {
   const {signOut } = useAuth();
   useEffect(() => {
-    api.get("/user/validate",{withCredentials:true}).catch((error) => {
-      
-      if (error.response?.status === 401) { 
+    try {
+      api.get("/user/validate", { withCredentials: true }).catch((err) => {
+    
+        if(err.code == "ERR_NETWORK"){
+    
+          return console.log("nao autorizado")
+        }
+      })
+    } catch (error) {
+      if (error.response?.status === 401) {
         return signOut();
-        
       }
-      return
-    });
+      return;
+    }
   }, []);
   return (
     <Routes>
@@ -29,7 +35,7 @@ export function AdminRoutes() {
       <Route path="/change/:id" element={<Update/>} />
       <Route path="/historic" element={<Historic/>} />
       
-     {/*  <Route path="*" exact={true} element={<NotFound />} /> */}
+     <Route path="*" exact={true} element={<Navigate to="/" />} /> 
     </Routes>
   );
 }

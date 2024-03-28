@@ -1,28 +1,27 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "./api";
-
+import { AppError } from "../utils/AppError";
 
 const AuthContext = createContext({});
 export function AuthProvider({ children }) {
   const [data, setData] = useState({});
-  const [cart,setCart] = useState(false);
+  const [cart, setCart] = useState(false);
   async function login({ email, password }) {
     try {
-      
       const response = await api.post(
         "login",
         { email, password },
-        {withCredentials:true}
+        { withCredentials: true }
       );
-      
+
       const { user } = response.data;
       localStorage.setItem("@food:user", JSON.stringify(user));
       setData({ user });
     } catch (error) {
-      if (error.response) {
-        throw new Error(error.response.data.message)
+      if (error.code == "ERR_NETWORK") {
+        throw new AppError("Pagina Não Autorizada");
       } else {
-        throw new Error("Não Foi Possivel Entrar")
+        throw new AppError(error.message);
       }
     }
   }
@@ -34,16 +33,17 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const user = localStorage.getItem("@food:user");
-   
+
     if (user) {
-   
       setData({
-        user: JSON.parse(user)
+        user: JSON.parse(user),
       });
     }
   }, []);
   return (
-    <AuthContext.Provider value={{ login, user:data.user,signOut,cart,setCart }}>
+    <AuthContext.Provider
+      value={{ login, user: data.user, signOut, cart, setCart }}
+    >
       {children}
     </AuthContext.Provider>
   );

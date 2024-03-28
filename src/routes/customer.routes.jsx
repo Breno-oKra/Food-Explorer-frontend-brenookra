@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route,Navigate } from 'react-router-dom';
 
 import { Home } from '../pages/Home';
 import { Details } from '../pages/Details';
@@ -25,13 +25,13 @@ export function CustomerRoutes() {
   }, []);
   return (
     <Routes>
-      <Route path="/" element={< Home />} />
-      <Route path="/details/:id" element={<Details />} />
-      <Route path="/favorites" element={<Favorites />} />
-      <Route path="/requests/:id" element={<Requests/>} />
-      <Route path="/historic" element={<Historic/>} />
+      <Route path="/" exact={true} element={< Home />} />
+      <Route path="/details/:id" exact={true} element={<Details />} />
+      <Route path="/favorites" exact={true}  element={<Favorites />} />
+      <Route path="/requests/:id" exact={true} element={<Requests/>} />
+      <Route path="/historic" exact={true} element={<Historic/>} />
      
-     {/*  <Route path="*" exact={true} element={<NotFound />} /> */}
+     <Route path="*" exact={true} element={<Navigate to="/" />} />
     </Routes>
   );
 }

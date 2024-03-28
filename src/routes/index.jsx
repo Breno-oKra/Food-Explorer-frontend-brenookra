@@ -10,28 +10,38 @@ export function Routes() {
   const { user, signOut } = useAuth();
 
   useEffect(() => {
-    try {
-      api.get("/user/validate", { withCredentials: true });
-    } catch (error) {
-      if (error.response?.status === 401) {
-        return signOut();
-      }
-      return;
+   
+    async function handleValidate(){
+      await api.get("/user/validate", { withCredentials: true }).catch((err) => {
+        if (err.code == "ERR_NETWORK") {
+          return alert("Pagina Não Autorizada");
+        } else if (err.code == 401) {
+          signOut();
+          return alert("Deslogado");
+         
+        }
+        return;
+      });
     }
+    handleValidate()
   }, []);
   function Routerredirect() {
+    
     if (user) {
+     
       if (user.role == "customer") {
+
         return <CustomerRoutes />;
-      } else if (user.role == "admin") {
-        return <AdminRoutes />;
       }
+      return <AdminRoutes />;
     }
     return <LoginRoutes />;
   }
   return (
+    
     <BrowserRouter>
-      <Routerredirect />
+      {user? <Routerredirect /> :  <LoginRoutes /> }
+      
     </BrowserRouter>
   );
 }

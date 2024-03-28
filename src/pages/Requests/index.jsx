@@ -13,7 +13,7 @@ import { Footer } from "../../components/Footer";
 import { useEffect, useState } from "react";
 import { api } from "../../hooks/api";
 import { useAuth } from "../../hooks/auth";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { CreditCard, DiamondsFour, Receipt } from "@phosphor-icons/react";
 import { Button } from "../../components/Button";
 import QrCode from "../../assets/qrcode.svg";
@@ -31,7 +31,7 @@ export function Requests() {
   const [validate, setValidate] = useState();
   const [cvc, setCVC] = useState();
   const [status, setStatus] = useState("none");
-  const[controlButton,setControlButton] = useState(true)
+  const [controlButton, setControlButton] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
     async function dataLoad() {
@@ -45,7 +45,7 @@ export function Requests() {
                 .then((resHist) => {
                   let data = resHist.data;
                   setStatus(data.status);
-                  
+
                   setCart(data.description);
                   Sum(data.description);
                 });
@@ -55,11 +55,10 @@ export function Requests() {
             }
           });
       } catch (error) {
-        
-        if(error.response.status == 401){
+        if (error.response.status == 401) {
           alert("Voce Foi Deslogado");
-          signOut()
-          navigate("/")
+          signOut();
+          navigate("/");
         }
       }
     }
@@ -87,13 +86,12 @@ export function Requests() {
     setTotalSum(Sume.toFixed(2));
   }
   function handlePay() {
-    setControlButton(false)
-    if(card && validate && cvc){
-        handleOrder()
-        setControlButton(true)
-    }
-    else{
-        alert("preencha todos os campos")
+    setControlButton(false);
+    if (card && validate && cvc) {
+      handleOrder();
+      setControlButton(true);
+    } else {
+      alert("preencha todos os campos");
     }
   }
   async function handleOrder() {
@@ -104,14 +102,14 @@ export function Requests() {
     );
     navigate("/");
   }
- 
+
   return (
     <Container>
       <Header />
       <Box>
         <div>
           <BoxOne id="mobile-box1">
-            <h2> {status == "none"? "Meu Pedido" : "Seu Ultimo Pedido" }</h2>
+            <h2> {status == "none" ? "Meu Pedido" : "Seu Ultimo Pedido"}</h2>
             <div>
               <div>
                 {cart &&
@@ -223,18 +221,15 @@ export function Requests() {
                             ></InputMask>
                           </fieldset>
                         </div>
-                        {
-                          controlButton?   <Button
-                          title={"Finalizar pagamento"}
-                          icon={Receipt}
-                          onClick={handlePay}
-                        /> :  <Button
-                        title={"Finalizar pagamento"}
-                        icon={Receipt}
-                   
-                      />
-                        }
-                      
+                        {controlButton ? (
+                          <Button
+                            title={"Finalizar pagamento"}
+                            icon={Receipt}
+                            onClick={handlePay}
+                          />
+                        ) : (
+                          <Button title={"Aguarde..."} />
+                        )}
                       </form>
                     )
                   ) : (
